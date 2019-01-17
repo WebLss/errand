@@ -34,10 +34,12 @@ public class CrossOriginProcessor extends AbstractProcessor {
 
     public void process(ActionContext ac) throws Throwable {
         System.out.println("crossProcessor");
-        HttpServletResponse resp = ac.getResponse();
         HttpServletRequest request = ac.getRequest();
 
+        HttpServletResponse resp = ac.getResponse();
+
         String origin = request.getHeader("Origin");
+
         if(!Strings.isBlank(origin)) {
             resp.setHeader("Access-Control-Allow-Origin", origin);
         }
@@ -51,6 +53,7 @@ public class CrossOriginProcessor extends AbstractProcessor {
         }
 
         if(!Strings.isBlank(this.credentials)) {
+
             resp.setHeader("Access-Control-Allow-Credentials", this.credentials);
         }
 

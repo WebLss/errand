@@ -2,7 +2,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
-  <display-name>lssblog</display-name>
+  <display-name>errand</display-name>
 
   <filter>
     <filter-name>nutz</filter-name>
@@ -59,8 +59,8 @@
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
 
- <!-- <error-page>
+  <error-page>
     <error-code>500</error-code>
     <location>/WEB-INF/jsp/500.jsp</location>
-  </error-page>-->
+  </error-page>
 </web-app>
