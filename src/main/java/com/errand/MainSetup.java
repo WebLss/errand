@@ -3,6 +3,7 @@ import com.errand.domain.User;
 import org.nutz.dao.Dao;
 import org.nutz.dao.util.Daos;
 import org.nutz.ioc.Ioc;
+import org.nutz.lang.Lang;
 import org.nutz.mvc.NutConfig;
 import org.nutz.mvc.Setup;
 
@@ -29,7 +30,7 @@ public class MainSetup implements Setup {
         if (dao.count(User.class) == 0) {
             User user = new User();
             user.setName("admin");
-            user.setPassword("123456");
+            user.setPassword(Lang.md5("123456"));
             user.setSuper(true);
             //user.setCreateTime(new Date());
             user.setCreateDate(new Date());

@@ -1,4 +1,4 @@
-package com.errand.web.module;
+package com.errand.web;
 
 import io.swagger.models.Info;
 import io.swagger.models.Swagger;
@@ -33,7 +33,7 @@ public class SwaggerModule {
     @At
     public void swagger(HttpServletRequest request, HttpServletResponse response) throws Exception {
         if ("true".equals(request.getParameter("force")))
-            init(); //强制刷新
+            this.init(); //强制刷新
         final String pathInfo = request.getRequestURI();
         if (pathInfo.endsWith("/swagger.json")) {
             response.setContentType("application/json");
@@ -46,15 +46,18 @@ public class SwaggerModule {
         }
     }
 
-    private void init() {
+    /**
+     * 必须是公有方法
+     */
+    public void init() {
         log.info("init swagger ...");
         swagger = new Swagger();
         Info info = new Info();
-        info.title("lssblog-Api");
+        info.title("errand-Api");
         swagger.info(info);
         HashSet<Class<?>> classes = new HashSet<Class<?>>();
         // 把下来的package路径改成你自己的package路径
-        for (Class<?> klass : Scans.me().scanPackage("com.gree.module")) {
+        for (Class<?> klass : Scans.me().scanPackage("com.errand.web.module")) {
             classes.add(klass);
         }
         Reader.read(swagger, classes);

@@ -19,6 +19,18 @@ public class ResponseResult<T> implements Result<T> {
     public static final int NO_PERMISSION=400;
 
 
+    private Map<String, Object> headers = new HashMap<>();
+
+    private int status;
+
+    private T payload;
+
+    private String responseCode;
+
+    private String responseMessage;
+
+
+
     /**
      * 创建一个成功的结果，不含 payload
      */
@@ -74,16 +86,6 @@ public class ResponseResult<T> implements Result<T> {
 
     private ResponseResult() {
     }
-
-    private Map<String, Object> headers = new HashMap<>();
-
-    private int status;
-
-    private T payload;
-
-    private String responseCode;
-
-    private String responseMessage;
 
     @Override
     public int getStatus() {
