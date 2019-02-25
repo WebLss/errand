@@ -2,6 +2,7 @@ package com.errand.service;
 
 import com.errand.domain.User;
 import org.nutz.dao.Cnd;
+import org.nutz.dao.Condition;
 import org.nutz.dao.Dao;
 import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.lang.Lang;
@@ -42,6 +43,10 @@ public class UserService extends BaseService<User> {
      */
     public User fetchByName(String name) {
         return fetch(Cnd.where("name", "=", name));
+    }
+
+    public User fetchByCnd(Condition cnd) {
+        return fetch(cnd);
     }
 
 }

@@ -1,16 +1,20 @@
 package com.errand.web.module;
 
 import com.errand.domain.User;
-import com.errand.security.JwtTonken;
+import com.errand.mvc.context.UserContext;
+import com.errand.mvc.filter.AccessTokenFilter;
+import com.errand.security.JwtToken;
 import com.errand.service.UserService;
 import com.errand.utils.GetOpenIDUtil;
 import com.errand.web.support.ResponseResult;
 import com.errand.web.support.Result;
+import org.nutz.dao.Cnd;
 import org.nutz.ioc.loader.annotation.Inject;
 import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.lang.util.NutMap;
+import org.nutz.mvc.adaptor.JsonAdaptor;
 import org.nutz.mvc.annotation.*;
 
 import javax.xml.ws.Response;
@@ -46,27 +50,78 @@ public class LoginModule {
      * @param code 微信小程序的code用于获取openId
      * @return
      */
+    @POST
     @At("/bindUser")
+    @AdaptBy(type = JsonAdaptor.class)  //适配器接收 "Content-Type": "applciation/json" ；若无，则默认接收x-wwww-encode
     public Result bindUser(@Param("role") String role, @Param("username") String name , @Param("password") String password,
                            @Param("code") String code) {
-
+        System.out.println(name);
+        System.out.println(password);
         Result res =  this.validUser(name, password, role);
-        if(res != null) return res;
         if (code == null || code.length() == 0) {
             return ResponseResult.newFailResult("code不能为空");
         } else {
-            Result result = this.validUser(name, password);
-            if(result.getStatus() == 0) {
+            if(res == null) {
                 NutMap resultMap = GetOpenIDUtil.oauth2GetOpenid(GetOpenIDUtil.appID, code, GetOpenIDUtil.appSecret);
                 if(resultMap.has("errcode")) {
                     return ResponseResult.newFailResult(resultMap.getString("errmsg"));
                 } else {
-                    System.out.println(resultMap);
+                    System.out.println(resultMap.getString("openid"));
+                    User exist = userService.fetchByCnd(Cnd.where("name", "=",name).and("password","=", Lang.md5(password)));
+                    exist.setOpenId(resultMap.getString("openid"));
+                    userService.update(exist);
+                    return ResponseResult.newResult();
                 }
+            } else {
+                return res;
             }
         }
-        return null;
     }
+
+    /**
+     * 获取用户信息
+     * @return User
+     */
+    @Filters(@By(type = AccessTokenFilter.class, args = {"ioc:tokenFilter"}))  // 必须提供token才能通过，即前端需要登录
+    @At("/getUserInfo")
+    @POST
+    public Result getUserInfo() {
+        User user = UserContext.getCurrentuser().get();
+        System.out.println(user.toString());
+        if(user != null) {
+            User result = userService.fetchByCnd(Cnd.where("name", "=",user.getName()).and("password","=", user.getPassword()));
+            if(result != null) return  ResponseResult.newResult(result);
+        }
+        return ResponseResult.newFailResult("不存在相应的用户或token已过期");
+    }
+
+
+    /**
+     * 通过openId登录
+     * @param code
+     * @return token
+     */
+    @POST
+    @At("/loginByCode")
+    @AdaptBy(type = JsonAdaptor.class)
+    public Result loginByOpenId(@Param("code") String code) {
+        System.out.println(code);
+        if(code != "") {
+            NutMap resultMap = GetOpenIDUtil.oauth2GetOpenid(GetOpenIDUtil.appID, code, GetOpenIDUtil.appSecret);
+            User user = userService.fetchByCnd(Cnd.where("openId", "=", resultMap.getString("openid")));
+            if(user != null) {
+                System.out.println(user);
+                return ResponseResult.newResult().setHeader("token", JwtToken.createToken(user));
+            } else {
+                return ResponseResult.newFailResult("无效openId");
+            }
+
+        } else {
+            return ResponseResult.newFailResult("openId获取失败");
+        }
+
+    }
+
 
     /**
      * 验证用户数据
@@ -88,7 +143,7 @@ public class LoginModule {
         User user = userService.fetchByName(name);
         if (user != null) {
             if(user.getPassword().equalsIgnoreCase(Lang.md5(password))) {
-                return ResponseResult.newResult(user).setHeader("token", JwtTonken.createToken(user));
+                return ResponseResult.newResult(user).setHeader("token", JwtToken.createToken(user));
             } else {
                 return ResponseResult.newFailResult("登录密码错误");
             }
@@ -99,33 +154,35 @@ public class LoginModule {
 
     /**
      * 验证用户数据
-     * @param names 用户名
+     * @param sname 用户名
      * @param passwords 密码
      * @param role 角色
      * @return
      */
-    public Result validUser(String names, String passwords, String role) {
-        if(Strings.isBlank(names) || Strings.isBlank(passwords)){
-
+    public Result validUser(String sname, String passwords, String role) {
+        if(Strings.isBlank(sname) || Strings.isBlank(passwords)){
             return ResponseResult.newFailResult("用户名或密码不能为空");
-
         }
-        User exist = userService.fetchByName(names);
+        User exist = userService.fetchByName(sname);
         if (exist == null) {
 
             return ResponseResult.newFailResult("用户名不存在");
+        } else {
+            if(exist.getOpenId() != null) {
+                return ResponseResult.newFailResult("该账号已绑定过其他微信号");
+            }
         }
-
+        System.out.println(role);
         if(role != null) {
             String message = "";
             switch (role) {
-                case "A":
+                case "超级管理员":
                     System.out.println("A");
                     if(!exist.isSuper()) {
                         message = "该角色下不存在对应用户";
                     }
                     break;
-                case "B":
+                case "业务员":
                     System.out.println("B");
                     if(!exist.isSystem()) {
                         message = "该角色下不存在对应用户";
@@ -133,7 +190,15 @@ public class LoginModule {
                 default:
                     break;
             }
-            return ResponseResult.newFailResult(message);
+            if(message != "") {
+                return ResponseResult.newFailResult(message);
+            } else {
+                System.out.println(passwords);
+                if(!exist.getPassword().equalsIgnoreCase(Lang.md5(passwords))) {
+                    return ResponseResult.newFailResult("密码错误");
+                }
+            }
+
         }
 
         return null;

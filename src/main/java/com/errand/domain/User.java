@@ -32,6 +32,7 @@ public class User implements Serializable {
     @ColDefine(type = ColType.VARCHAR, width = 20)
     private String nickName;   // 昵称
 
+    @Column
     @ColDefine(type = ColType.VARCHAR, width = 140)
     private String openId;   // 绑定的weixin 唯一识别号
 

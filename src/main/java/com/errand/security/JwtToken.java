@@ -13,7 +13,7 @@ import java.util.Date;
  * @date: 2018-02-03 15:37
  * @description: 生成token
  */
-public class JwtTonken {
+public class JwtToken {
     private static Key secret = MacProvider.generateKey() ;
     /**
      * 生成jwt的token

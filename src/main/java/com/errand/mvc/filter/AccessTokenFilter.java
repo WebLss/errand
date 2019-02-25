@@ -1,7 +1,7 @@
 package com.errand.mvc.filter;
 import com.errand.domain.User;
 import com.errand.mvc.context.UserContext;
-import com.errand.security.JwtTonken;
+import com.errand.security.JwtToken;
 import com.errand.utils.WebUtils;
 import com.errand.web.support.ResponseResult;
 import io.jsonwebtoken.Claims;
@@ -61,12 +61,13 @@ public class AccessTokenFilter implements ActionFilter {
             }
         }
         String authorization = WebUtils.getHeaderFromRquest(request, "Authorization");
+        System.out.println(authorization);
         if (authorization == null) {
             response.getWriter().write(Json.toJson(ResponseResult.newFailResult("未登录")));
             return false;
         }
         try {
-            Claims claims = JwtTonken.parseToken(authorization);
+            Claims claims = JwtToken.parseToken(authorization);
             User user = new User();
             user.setName((String) claims.get("name"));
             user.setPassword((String) claims.get("password"));

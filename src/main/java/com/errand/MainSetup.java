@@ -25,7 +25,7 @@ public class MainSetup implements Setup {
         Dao dao = ioc.get(Dao.class);
         // 如果没有createTablesInPackage,请检查nutz版本
         Daos.createTablesInPackage(dao, "com.errand.domain", false);
-        //Daos.migration(dao, UserDb.class, true, true, true);
+        Daos.migration(dao, User.class, true, true, true);
         // 初始化默认根用户
         if (dao.count(User.class) == 0) {
             User user = new User();
