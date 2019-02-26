@@ -51,6 +51,9 @@ public class User implements Serializable {
     @ManyMany(target = Role.class, relation = "system_user_role", from = "userid", to = "roleid")
     private List<Role> roles;
 
+    @ManyMany(target = Role.class, relation = "address_user", from = "userid", to = "addressid")
+    private List<Address> address;
+
     @Column("is_locked")
     @Default("true")
     @ColDefine(type = ColType.BOOLEAN)
@@ -178,5 +181,13 @@ public class User implements Serializable {
 
     public void setSuper(boolean aSuper) {
         isSuper = aSuper;
+    }
+
+    public List<Address> getAddress() {
+        return address;
+    }
+
+    public void setAddress(List<Address> address) {
+        this.address = address;
     }
 }
