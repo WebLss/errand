@@ -8,7 +8,7 @@ import java.util.List;
  * 地址保存
  */
 @Table("address")
-@TableIndexes({ @Index(name = "user_name", fields = { "name" }, unique = true)})
+@TableIndexes({ @Index(name = "areaName", fields = { "areaName" }, unique = true)})
 public class Address {
 
     private static final long serialVersionUID = -965829144356813385L;
