@@ -190,4 +190,24 @@ public class User implements Serializable {
     public void setAddress(List<Address> address) {
         this.address = address;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", password='" + password + '\'' +
+                ", nickName='" + nickName + '\'' +
+                ", openId='" + openId + '\'' +
+                ", description='" + description + '\'' +
+                ", createDate=" + createDate +
+                ", registerIp='" + registerIp + '\'' +
+                ", roles=" + roles +
+                ", address=" + address +
+                ", locked=" + locked +
+                ", system=" + system +
+                ", taker=" + taker +
+                ", isSuper=" + isSuper +
+                '}';
+    }
 }

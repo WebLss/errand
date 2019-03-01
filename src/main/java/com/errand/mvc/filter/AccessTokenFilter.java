@@ -35,6 +35,9 @@ public class AccessTokenFilter implements ActionFilter {
         System.out.println("AccessTokenFilter");
         HttpServletResponse response = actionContext.getResponse();
         HttpServletRequest request = actionContext.getRequest();
+        response.setHeader("Content-type", "text/html;charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
+
         //response.setCharacterEncoding("UTF-8");
         try {
            // request.setCharacterEncoding("UTF-8");
@@ -54,6 +57,8 @@ public class AccessTokenFilter implements ActionFilter {
     }
 
     private boolean checkToken(HttpServletRequest request , HttpServletResponse response) throws IOException {
+        response.setHeader("Content-type", "text/html;charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
         List<String> args = ManagementFactory.getRuntimeMXBean().getInputArguments();
         for (String arg : args) {
             if (arg.startsWith("-Xrunjdwp") || arg.startsWith("-agentlib:jdwp")) {
@@ -63,7 +68,7 @@ public class AccessTokenFilter implements ActionFilter {
         String authorization = WebUtils.getHeaderFromRquest(request, "Authorization");
         System.out.println(authorization);
         if (authorization == null) {
-            response.getWriter().write(Json.toJson(ResponseResult.newFailResult("未登录")));
+            response.getWriter().write(Json.toJson(ResponseResult.newFailResult("未登录", ResponseResult.NO_LOGIN)));
             return false;
         }
         try {
@@ -74,18 +79,16 @@ public class AccessTokenFilter implements ActionFilter {
             UserContext.getCurrentuser().set(user);
             return true;
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-           /* if (e instanceof ExpiredJwtException) { //签名过期
-                resultBean.setCode(ResponseResult.LOGIN_EXPIRED);
-                resultBean.setMsg("expired login");
+
+
+            // logger.error(e.getMessage(), e);
+            if (e instanceof ExpiredJwtException) { //签名过期
+                response.getWriter().write(Json.toJson(ResponseResult.newFailResult("expired login", ResponseResult.LOGIN_EXPIRED)));
                 System.out.println("ExpiredJwtException");
             } else {
-                resultBean.setCode(ResponseResult.NO_LOGIN);
-                resultBean.setMsg("no login");
+                response.getWriter().write(Json.toJson(ResponseResult.newFailResult("未登录", ResponseResult.NO_LOGIN)));
                 System.out.println("Other JwtException");
             }
-
-            response.getWriter().write(Json.toJson(resultBean));*/
             return false;
         }
     }

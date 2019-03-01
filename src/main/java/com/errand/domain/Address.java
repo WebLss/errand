@@ -8,7 +8,6 @@ import java.util.List;
  * 地址保存
  */
 @Table("address")
-@TableIndexes({ @Index(name = "areaName", fields = { "areaName" }, unique = true)})
 public class Address {
 
     private static final long serialVersionUID = -965829144356813385L;
@@ -42,7 +41,7 @@ public class Address {
 
 
     @ManyMany(target = Role.class, relation = "address_user", from = "addressid", to = "userid")
-    private List<User> user;
+    private List<User> users;
 
 
     public Long getId() {
@@ -101,11 +100,25 @@ public class Address {
         this.name = name;
     }
 
-    public List<User> getUser() {
-        return user;
+    public List<User> getUsers() {
+        return users;
     }
 
-    public void setUser(List<User> user) {
-        this.user = user;
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
+
+    @Override
+    public String toString() {
+        return "Address{" +
+                "id=" + id +
+                ", areaName='" + areaName + '\'' +
+                ", longitude=" + longitude +
+                ", latitude=" + latitude +
+                ", phone='" + phone + '\'' +
+                ", adcode='" + adcode + '\'' +
+                ", name='" + name + '\'' +
+                ", users=" + users +
+                '}';
     }
 }

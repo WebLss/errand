@@ -77,12 +77,29 @@ public class ResponseResult<T> implements Result<T> {
      * @return 新创建的结果
      */
     public static <T> Result<T> newFailResult(String message) {
-        ResponseResult<T> result = new ResponseResult<T>();
+        ResponseResult<T> result = new ResponseResult<>();
         result.status = Result.STATUS_FAIL;
         result.responseMessage = message;
         result.responseCode = ResponseCodes.RESPONSE_CODE_SYSTEM_ERROR;
         return result;
     }
+
+    /**
+     * 含提示信息和状态码的错误类型
+     * @param message 错误说明
+     * @param status  错误状态码
+     * @param <T>
+     * @return
+     */
+    public static <T> Result<T> newFailResult(String message, int status) {
+        ResponseResult<T> result = new ResponseResult<>();
+        result.status = status;
+        result.responseMessage = message;
+        result.responseCode = ResponseCodes.RESPONSE_CODE_SYSTEM_ERROR;
+        return result;
+    }
+
+
 
     private ResponseResult() {
     }
