@@ -38,7 +38,8 @@ public class AddressModule {
         System.out.println(addr.toString());
         User user = UserContext.getCurrentuser().get();
         System.out.println(user.toString());
-        addr.setUsers(userService.query(Cnd.where("id", "in", new Long[]{user.getId()})));
+
+        addr.setUsers(userService.query(Cnd.where("name","=", user.getName()).and("password", "=", user.getPassword())));
         addressService.insert(addr);
 
         return null;
