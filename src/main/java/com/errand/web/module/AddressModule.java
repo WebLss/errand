@@ -6,12 +6,15 @@ import com.errand.mvc.context.UserContext;
 import com.errand.mvc.filter.AccessTokenFilter;
 import com.errand.service.AddressService;
 import com.errand.service.UserService;
+import com.errand.web.support.ResponseResult;
 import com.errand.web.support.Result;
 import org.nutz.dao.Cnd;
 import org.nutz.ioc.loader.annotation.Inject;
 import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.mvc.adaptor.JsonAdaptor;
 import org.nutz.mvc.annotation.*;
+
+import javax.xml.ws.Response;
 
 /**
  * @user: 180296-Web寻梦狮
@@ -39,11 +42,18 @@ public class AddressModule {
         User user = UserContext.getCurrentuser().get();
         System.out.println(user.toString());
 
-        addr.setUsers(userService.query(Cnd.where("name","=", user.getName()).and("password", "=", user.getPassword())));
-        addressService.insert(addr);
+        user = userService.fetchByCnd(Cnd.where("name","=", user.getName()).and("password", "=", user.getPassword()));
+        System.out.println(addr.toString());
 
-        return null;
+        try {
+            addressService.insert(addr, user.getId());
+        } catch (Exception e) {
+            return ResponseResult.newFailResult("新增地址失败");
+        }
+        return ResponseResult.newResult();
     }
+
+
 
 
 

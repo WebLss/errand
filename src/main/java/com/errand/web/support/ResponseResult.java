@@ -11,10 +11,6 @@ public class ResponseResult<T> implements Result<T> {
     public static final int NO_LOGIN=301;
     //登陆过期
     public static final int LOGIN_EXPIRED = 302;
-    //成功
-    public static final int SUCCESS=200;
-    //失败
-    public static final int FAIL=500;
     //没有权限
     public static final int NO_PERMISSION=400;
 

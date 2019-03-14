@@ -40,7 +40,7 @@ public class Address {
     private String name;  // 姓名
 
 
-    @ManyMany(target = Role.class, relation = "address_user", from = "addressid", to = "userid")
+    @ManyMany(relation = "address_user", from = "addressid", to = "userid")
     private List<User> users;
 
 
