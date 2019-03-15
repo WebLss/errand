@@ -76,6 +76,8 @@ public class AccessTokenFilter implements ActionFilter {
             User user = new User();
             user.setName((String) claims.get("name"));
             user.setPassword((String) claims.get("password"));
+            user.setId( Long.parseLong(claims.get("id").toString()));
+            System.out.println("fff:"+ user.toString());
             UserContext.getCurrentuser().set(user);
             return true;
         } catch (Exception e) {

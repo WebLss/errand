@@ -54,8 +54,23 @@ public class AddressModule {
     }
 
 
+    @GET
+    @Filters(@By(type = AccessTokenFilter.class, args = {"ioc:tokenFilter"}))
+    @At("/list")
+    public Result query(@Param("areaName") String areaName)  {
+        System.out.println("areaName:"+areaName);
+        User user = UserContext.getCurrentuser().get();
+        System.out.println(user);
+        Address address = new Address();
+        address.setAreaName(areaName == null ? "" : areaName);
+        return ResponseResult.newResult(addressService.list(address, user.getId()));
+    }
 
-
+    /*public void delete(Long id) {
+        dao().delete(Role.class, id);
+        dao().clear("system_role_permission", Cnd.where("roleid", "=", id));
+        dao().clear("system_user_role", Cnd.where("roleid", "=", id));
+    }*/
 
 
 }

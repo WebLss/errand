@@ -28,6 +28,7 @@ public class JwtToken {
         if (user!=null) {
             String token = Jwts.builder()
                     .setSubject("visualization")
+                    .claim("id", String.valueOf(user.getId()))
                     .claim("name", user.getName())
                     .claim("password", user.getPassword())
                     .claim("createTime", current)

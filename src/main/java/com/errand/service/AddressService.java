@@ -3,12 +3,20 @@ package com.errand.service;
 import com.errand.domain.Address;
 import com.errand.exception.BusinessException;
 import com.errand.web.support.ResponseCodes;
+import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.sql.Sql;
+import org.nutz.dao.sql.SqlCallback;
 import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.trans.Atom;
 import org.nutz.trans.Trans;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * 地址管理业务类
@@ -42,6 +50,38 @@ public class AddressService extends BaseService<Address> {
             throw new BusinessException(ResponseCodes.RESPONSE_CODE_SYSTEM_ERROR);
         }
 
+    }
+
+
+    /**
+     * 获取地址列表
+     * @param address object
+     * @param userId 用户id
+     * @return List<Address>
+     */
+    public List<Address> list(Address address, Long userId) {
+        Sql sql = Sqls.create("select * from $table1 where address.id in (SELECT addressid from $table2 where userid = @userId) and areaName like @areaName");
+        sql.vars().set("table1", "address");
+        sql.vars().set("table2", "address_user");
+        sql.params().set("userId", userId).set("areaName", address.getAreaName()+"%");
+        sql.setCallback(new SqlCallback() {
+            public Object invoke(Connection conn, ResultSet rs, Sql sql) throws SQLException {
+                List<Address> list = new LinkedList<Address>();
+                while (rs.next()) {
+                    Address addr = new Address();
+                    addr.setId(rs.getLong("id"));
+                    addr.setLongitude(rs.getFloat("longitude"));
+                    addr.setLatitude(rs.getFloat("latitude"));
+                    addr.setAreaName(rs.getString("areaName"));
+                    addr.setPhone(rs.getString("phone"));
+                    addr.setName(rs.getString("name"));
+                    list.add(addr);
+                }
+                return list;
+            }
+        });
+        dao().execute(sql);
+        return sql.getList(Address.class);
     }
 
 
