@@ -14,8 +14,6 @@ import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.mvc.adaptor.JsonAdaptor;
 import org.nutz.mvc.annotation.*;
 
-import javax.xml.ws.Response;
-
 /**
  * @user: 180296-Web寻梦狮
  * @description: 登录模块
@@ -57,6 +55,7 @@ public class AddressModule {
     @GET
     @Filters(@By(type = AccessTokenFilter.class, args = {"ioc:tokenFilter"}))
     @At("/list")
+    @AdaptBy(type = JsonAdaptor.class)
     public Result query(@Param("areaName") String areaName)  {
         System.out.println("areaName:"+areaName);
         User user = UserContext.getCurrentuser().get();
@@ -66,11 +65,19 @@ public class AddressModule {
         return ResponseResult.newResult(addressService.list(address, user.getId()));
     }
 
-    /*public void delete(Long id) {
-        dao().delete(Role.class, id);
-        dao().clear("system_role_permission", Cnd.where("roleid", "=", id));
-        dao().clear("system_user_role", Cnd.where("roleid", "=", id));
-    }*/
+    @POST
+    @Filters(@By(type = AccessTokenFilter.class, args = {"ioc:tokenFilter"}))
+    @At("/delete")
+    public Result delete(@Param("id") Long addressId) {
+        System.out.println("addressId:"+ addressId);
+        try {
+            addressService.delete(addressId);
+            return ResponseResult.newResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseResult.newFailResult("删除地址失败！");
+        }
+    }
 
 
 }

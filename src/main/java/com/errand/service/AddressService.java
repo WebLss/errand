@@ -84,5 +84,23 @@ public class AddressService extends BaseService<Address> {
         return sql.getList(Address.class);
     }
 
+    /**
+     * 删除地址
+     * @param addrId  地址id
+     */
+    public void delete(final Long addrId) throws Exception{
+
+        try {
+            Trans.exec(new Atom(){
+                public void run() {
+                    dao().delete(Address.class, addrId);
+                    dao().clear("address_user", Cnd.where("addressid", "=", addrId));
+                }
+            });
+        } catch (Exception e) {
+            System.out.println(e.toString());
+            throw new BusinessException(ResponseCodes.RESPONSE_CODE_SYSTEM_ERROR);
+        }
+    }
 
 }
