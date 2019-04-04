@@ -37,6 +37,10 @@ public class Address {
 
     @Column
     @ColDefine(type = ColType.VARCHAR, width = 200)
+    private String address; // 详细地址
+
+    @Column
+    @ColDefine(type = ColType.VARCHAR, width = 200)
     private String name;  // 姓名
 
 
@@ -108,6 +112,14 @@ public class Address {
         this.users = users;
     }
 
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     @Override
     public String toString() {
         return "Address{" +
@@ -117,6 +129,7 @@ public class Address {
                 ", latitude=" + latitude +
                 ", phone='" + phone + '\'' +
                 ", adcode='" + adcode + '\'' +
+                ", address='" + address + '\'' +
                 ", name='" + name + '\'' +
                 ", users=" + users +
                 '}';

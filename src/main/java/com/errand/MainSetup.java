@@ -1,4 +1,5 @@
 package com.errand;
+import com.errand.domain.Address;
 import com.errand.domain.User;
 import org.nutz.dao.Dao;
 import org.nutz.dao.util.Daos;
@@ -26,6 +27,7 @@ public class MainSetup implements Setup {
         // 如果没有createTablesInPackage,请检查nutz版本
         Daos.createTablesInPackage(dao, "com.errand.domain", false);
         Daos.migration(dao, User.class, true, true, true);
+        Daos.migration(dao, Address.class, true, true, true);
         // 初始化默认根用户
         if (dao.count(User.class) == 0) {
             User user = new User();

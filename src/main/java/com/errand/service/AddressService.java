@@ -31,6 +31,12 @@ public class AddressService extends BaseService<Address> {
         super(dao);
     }
 
+    /**
+     * insert object of address
+     * @param address object
+     * @param userId  user id
+     * @throws Exception
+     */
     public void insert(final Address address, final Long userId) throws Exception{
 
         try {
@@ -50,6 +56,14 @@ public class AddressService extends BaseService<Address> {
             throw new BusinessException(ResponseCodes.RESPONSE_CODE_SYSTEM_ERROR);
         }
 
+    }
+
+    /**
+     * update object of address
+     * @param address object
+     */
+    public int update(final Address address) {
+        return dao().update(address);
     }
 
 
@@ -75,6 +89,8 @@ public class AddressService extends BaseService<Address> {
                     addr.setAreaName(rs.getString("areaName"));
                     addr.setPhone(rs.getString("phone"));
                     addr.setName(rs.getString("name"));
+                    addr.setAdcode(rs.getString("adcode"));
+                    addr.setAddress(rs.getString("address"));
                     list.add(addr);
                 }
                 return list;

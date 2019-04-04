@@ -51,6 +51,24 @@ public class AddressModule {
         return ResponseResult.newResult();
     }
 
+    @POST
+    @Filters(@By(type = AccessTokenFilter.class, args = {"ioc:tokenFilter"}))
+    @At("/edit")
+    @AdaptBy(type = JsonAdaptor.class)
+    public Result edit(@Param("..") Address addr) {
+        if(addr.getAddress().equalsIgnoreCase("")) {
+            return ResponseResult.newFailResult("详细地址不能为空");
+        }
+        if(addressService.update(addr) == 1) {
+            return ResponseResult.newResult();
+        } else {
+            return ResponseResult.newFailResult("添加地址失败！");
+        }
+
+    }
+
+
+
 
     @GET
     @Filters(@By(type = AccessTokenFilter.class, args = {"ioc:tokenFilter"}))
@@ -68,6 +86,7 @@ public class AddressModule {
     @POST
     @Filters(@By(type = AccessTokenFilter.class, args = {"ioc:tokenFilter"}))
     @At("/delete")
+    @AdaptBy(type = JsonAdaptor.class)
     public Result delete(@Param("id") Long addressId) {
         System.out.println("addressId:"+ addressId);
         try {
