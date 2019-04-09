@@ -98,5 +98,16 @@ public class AddressModule {
         }
     }
 
+    @POST
+    @Filters(@By(type = AccessTokenFilter.class, args = {"ioc:tokenFilter"}))
+    @At("/find")
+    @AdaptBy(type = JsonAdaptor.class)
+    public Result find(@Param("id") Long addressId) {
+       if(addressId != null) {
+           return ResponseResult.newResult(addressService.find(addressId));
+       }
+       return ResponseResult.newFailResult("地址id无效");
+    }
+
 
 }

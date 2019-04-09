@@ -119,4 +119,11 @@ public class AddressService extends BaseService<Address> {
         }
     }
 
+
+    public Address find(Long addrId) {
+        return dao().fetch(Address.class, addrId);
+    }
+
+
+
 }
