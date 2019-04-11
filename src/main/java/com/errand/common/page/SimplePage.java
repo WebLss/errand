@@ -5,10 +5,10 @@ import java.util.List;
 
 public class SimplePage implements Paginable {
 
-    private static final int DEF_COUNT = 20;  // 默认每页总条数
+    private static final int DEF_COUNT = 6;  // 默认每页总条数
     private List<Integer> localArrayList = new ArrayList<Integer>();
     protected int totalCount = 0;
-    protected int pageSize = 20;
+    protected int pageSize = 6;
     protected int pageNo = 1;
     private int minPage = pageNo - (int) Math.floor((pageSize - 1) / 2.0D);
     private int maxPage = pageNo + (int) Math.ceil((pageSize - 1) / 2.0D);

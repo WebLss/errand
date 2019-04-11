@@ -12,6 +12,14 @@ public class Order  implements Serializable {
     @Id
     private Long id;    // 逻辑id
 
+    @Name
+    @ColDefine(type = ColType.VARCHAR, width = 50)
+    private String orderId; // 订单号
+
+    @Column
+    @ColDefine(type = ColType.VARCHAR, width = 20)
+    private String type; // "help" or "buy"
+
     @Column
     @ColDefine(type = ColType.VARCHAR, width = 200)
     private String getTime;  // 时间
@@ -288,10 +296,19 @@ public class Order  implements Serializable {
         this.orderStatus = orderStatus;
     }
 
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
+
     @Override
     public String toString() {
         return "Order{" +
                 "id=" + id +
+                ", orderId='" + orderId + '\'' +
                 ", getTime='" + getTime + '\'' +
                 ", amount=" + amount +
                 ", markiUserFee=" + markiUserFee +

@@ -62,7 +62,7 @@ public class AddressService extends BaseService<Address> {
      * update object of address
      * @param address object
      */
-    public int update(final Address address) {
+    public int update(Address address) {
         return dao().update(address);
     }
 
