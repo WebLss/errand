@@ -14,7 +14,7 @@ import org.nutz.dao.entity.annotation.TableIndexes;
 
 @Table("system_role")
 @TableIndexes({ @Index(name = "role_name", fields = { "name" }, unique = true) }) // 添加索引, 类级注解
-public class Role implements Serializable{
+public class Role extends BaseBean{
     private static final long serialVersionUID = 7928270441533321123L;
     @Id
     private Long id;

@@ -8,7 +8,8 @@ import java.util.List;
 /**
  * 设置权限菜单，用于关联角色
  */
-public class Permission  implements Serializable {
+@Table("system_permission")
+public class Permission  extends BaseBean{
     private static final long serialVersionUID = -8140799124476746216L;
     @Id
     private Long id;

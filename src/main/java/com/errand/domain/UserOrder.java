@@ -2,16 +2,15 @@ package com.errand.domain;
 
 import org.nutz.dao.entity.annotation.*;
 
-import java.io.Serializable;
 
 @Table("order_user")
 @TableIndexes({@Index(name="orderid_userid", fields={"orderId", "userId"})})
-public class UserOrder  implements Serializable {
+public class UserOrder  extends BaseBean {
 
     @Id
     private Long id;
 
-    @Column
+    @Name
     @ColDefine(type = ColType.VARCHAR, width = 50)
     private String orderId;
 
@@ -58,13 +57,4 @@ public class UserOrder  implements Serializable {
         this.sellerId = sellerId;
     }
 
-    @Override
-    public String toString() {
-        return "UserOrder{" +
-                "id=" + id +
-                ", orderId='" + orderId + '\'' +
-                ", userId=" + userId +
-                ", sellerId=" + sellerId +
-                '}';
-    }
 }

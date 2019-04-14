@@ -30,6 +30,17 @@ public class UserService extends BaseService<User> {
         dao().update(user);
     }
 
+    /**
+     * 更新
+     * @param user object
+     * @param Regx  "^age$" "^age$" //正则
+     * @return
+     */
+    public int update(User user, String Regx) {
+
+        return dao().update(user, Regx);
+    }
+
     public void insert(User user) {
         user = dao().insert(user);
         // dao().insertRelation(user, "roles");
@@ -48,5 +59,6 @@ public class UserService extends BaseService<User> {
     public User fetchByCnd(Condition cnd) {
         return fetch(cnd);
     }
+
 
 }

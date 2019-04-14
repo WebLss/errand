@@ -111,7 +111,7 @@ public class LoginModule {
             User user = userService.fetchByCnd(Cnd.where("openId", "=", resultMap.getString("openid")));
             if(user != null) {
                 System.out.println(user);
-                return ResponseResult.newResult().setHeader("token", JwtToken.createToken(user));
+                return ResponseResult.newResult(user).setHeader("token", JwtToken.createToken(user));
             } else {
                 return ResponseResult.newFailResult("无效openId");
             }

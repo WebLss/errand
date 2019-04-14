@@ -8,7 +8,7 @@ import java.util.List;
  * 地址保存
  */
 @Table("address")
-public class Address {
+public class Address extends BaseBean{
 
     private static final long serialVersionUID = -965829144356813385L;
 
@@ -120,18 +120,5 @@ public class Address {
         this.address = address;
     }
 
-    @Override
-    public String toString() {
-        return "Address{" +
-                "id=" + id +
-                ", areaName='" + areaName + '\'' +
-                ", longitude=" + longitude +
-                ", latitude=" + latitude +
-                ", phone='" + phone + '\'' +
-                ", adcode='" + adcode + '\'' +
-                ", address='" + address + '\'' +
-                ", name='" + name + '\'' +
-                ", users=" + users +
-                '}';
-    }
+
 }

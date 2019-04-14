@@ -6,7 +6,7 @@ import org.nutz.dao.entity.annotation.*;
 import java.io.Serializable;
 
 @Table("orders")
-public class Order  implements Serializable {
+public class Order extends BaseBean{
 
 
     @Id
@@ -25,8 +25,13 @@ public class Order  implements Serializable {
     private String getTime;  // 时间
 
     @Column
+    @ColDefine(type = ColType.VARCHAR, width = 200)
+    @Default("")
+    private String finish_time;  // 已完成时间
+
+    @Column
     @ColDefine(type = ColType.FLOAT)
-    private float amount;  // 总额
+    private Double amount;  // 总额
 
     @Column
     @ColDefine(type = ColType.FLOAT)
@@ -112,6 +117,9 @@ public class Order  implements Serializable {
     @ColDefine(type = ColType.INT)
     private int orderStatus;  // 订单状态 1.待付款 2.待取货 3.待送货 4.待评论 5.已完成 6已取消
 
+
+
+
     public Long getId() {
         return id;
     }
@@ -128,11 +136,11 @@ public class Order  implements Serializable {
         this.getTime = getTime;
     }
 
-    public float getAmount() {
+    public Double getAmount() {
         return amount;
     }
 
-    public void setAmount(float amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 
@@ -304,12 +312,30 @@ public class Order  implements Serializable {
         this.orderId = orderId;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getFinish_time() {
+        return finish_time;
+    }
+
+    public void setFinish_time(String finish_time) {
+        this.finish_time = finish_time;
+    }
+
     @Override
     public String toString() {
         return "Order{" +
                 "id=" + id +
                 ", orderId='" + orderId + '\'' +
+                ", type='" + type + '\'' +
                 ", getTime='" + getTime + '\'' +
+                ", finish_time='" + finish_time + '\'' +
                 ", amount=" + amount +
                 ", markiUserFee=" + markiUserFee +
                 ", markiUserRate=" + markiUserRate +

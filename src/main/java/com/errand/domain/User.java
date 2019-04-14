@@ -12,7 +12,7 @@ import java.util.List;
  */
 @Table("system_user")
 @TableIndexes({ @Index(name = "user_name", fields = { "name" }, unique = true)})
-public class User implements Serializable {
+public class User extends BaseBean {
 
     private static final long serialVersionUID = -965829144356813385L;
 
@@ -51,8 +51,13 @@ public class User implements Serializable {
     @ManyMany(target = Role.class, relation = "system_user_role", from = "userid", to = "roleid")
     private List<Role> roles;
 
+    @ManyMany(target = Income.class, relation = "user_income", from = "userid", to = "incomeid")
+    private List<Income> incomes;
+
     @ManyMany(target = Role.class, relation = "address_user", from = "userid", to = "addressid")
     private List<Address> address;
+
+
 
     @Column("is_locked")
     @Default("true")
@@ -74,6 +79,19 @@ public class User implements Serializable {
     @ColDefine(type = ColType.BOOLEAN)
     private boolean isSuper;   // 是否是超级管理员
 
+    @Column("is_vip")
+    @Default("false")
+    @ColDefine(type = ColType.BOOLEAN)
+    private boolean isVip;   // 是否是taker 的vip
+
+    @Column("is_able")
+    @Default("0")
+    @ColDefine(type = ColType.INT)
+    private int isAble;   // 一天可利用次数 若isVip = true 则 无限制，若isVip = false 则只有5次
+
+    @Column("tipTime")
+    @Default("0")
+    private Date isTipTime ; // 标记该天时间 ，若该值在当天范围则不更新isAble 否则若满足taker为非会员时更新
 
 
     public boolean isLocked() {
@@ -191,23 +209,35 @@ public class User implements Serializable {
         this.address = address;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", password='" + password + '\'' +
-                ", nickName='" + nickName + '\'' +
-                ", openId='" + openId + '\'' +
-                ", description='" + description + '\'' +
-                ", createDate=" + createDate +
-                ", registerIp='" + registerIp + '\'' +
-                ", roles=" + roles +
-                ", address=" + address +
-                ", locked=" + locked +
-                ", system=" + system +
-                ", taker=" + taker +
-                ", isSuper=" + isSuper +
-                '}';
+    public int getIsAble() {
+        return isAble;
+    }
+
+    public void setIsAble(int isAble) {
+        this.isAble = isAble;
+    }
+
+    public Date getIsTipTime() {
+        return isTipTime;
+    }
+
+    public void setIsTipTime(Date isTipTime) {
+        this.isTipTime = isTipTime;
+    }
+
+    public boolean isVip() {
+        return isVip;
+    }
+
+    public void setVip(boolean vip) {
+        isVip = vip;
+    }
+
+    public List<Income> getIncomes() {
+        return incomes;
+    }
+
+    public void setIncomes(List<Income> incomes) {
+        this.incomes = incomes;
     }
 }
