@@ -103,9 +103,7 @@ public class OrderModule {
         User user = UserContext.getCurrentuser().get();
         user = userService.fetchByCnd(Cnd.where("name","=", user.getName()).and("password", "=", user.getPassword()));
         Pagination page = new Pagination();
-        if(pageNo == 0) {
-            pageNo = 1;
-        }
+        if(pageNo == 0) pageNo = 1;
         page.setPageNo(pageNo);
         page.setPageSize(pageSize);
         List<Order> list = orderService.list(status, user.getId(), page);
@@ -141,6 +139,7 @@ public class OrderModule {
         if(orderId != "") {
             Order order = orderService.find(orderId);
             order.setOrderStatus(4);
+            order.setFinish_time(new Date().toString());
             try {
                 orderService.confirmOrder(order, user.getId());
                 return ResponseResult.newResult();

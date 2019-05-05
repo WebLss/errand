@@ -1,9 +1,13 @@
 package com.errand.web.module;
 
+import com.errand.common.page.Pagination;
+import com.errand.domain.Income;
+import com.errand.domain.Order;
 import com.errand.domain.User;
 import com.errand.mvc.context.UserContext;
 import com.errand.mvc.filter.AccessTokenFilter;
 import com.errand.security.JwtToken;
+import com.errand.service.IncomeService;
 import com.errand.service.UserService;
 import com.errand.utils.GetOpenIDUtil;
 import com.errand.web.support.ResponseResult;
@@ -18,6 +22,7 @@ import org.nutz.mvc.adaptor.JsonAdaptor;
 import org.nutz.mvc.annotation.*;
 
 import javax.xml.ws.Response;
+import java.util.List;
 
 
 /**
@@ -32,6 +37,9 @@ public class LoginModule {
 
     @Inject
     protected UserService userService;
+
+    @Inject
+    protected IncomeService incomeService;
 
     @POST
     //@Filters(@By(type = CrossOriginsFilter.class,args = {"ioc:crossFilter"}))
@@ -204,5 +212,39 @@ public class LoginModule {
         return null;
     }
 
+    /**
+     * 获取收入明细列表
+     * 明细列表
+     * @param pageNo 当前页码
+     * @param pageSize 每页显示多少条数据
+     * @return Result
+     */
+    @GET
+    @Filters(@By(type = AccessTokenFilter.class, args = {"ioc:tokenFilter"}))
+    @At("/getIncomeList")
+    @AdaptBy(type = JsonAdaptor.class)
+    public Result getIncomeList(@Param("pageNo") int pageNo, @Param("pageSize") int pageSize) {
+        User user = UserContext.getCurrentuser().get();
+        user = userService.fetchByCnd(Cnd.where("name","=", user.getName()).and("password", "=", user.getPassword()));
+        Pagination page = new Pagination();
+        if(pageNo == 0) {
+            pageNo = 1;
+        }
+        page.setPageNo(pageNo);
+        page.setPageSize(pageSize);
+        List<Income> list = null;
+        list = incomeService.list(user.getId(), page);
+        page.setList(list);
+        return ResponseResult.newResult(page);
+    }
+    @GET
+    @Filters(@By(type = AccessTokenFilter.class, args = {"ioc:tokenFilter"}))
+    @At("/getIncomeAmount")
+    @AdaptBy(type = JsonAdaptor.class)
+    public Result getIncomeAmount() {
+        User user = UserContext.getCurrentuser().get();
+        user = userService.fetchByCnd(Cnd.where("name","=", user.getName()).and("password", "=", user.getPassword()));
 
+        return ResponseResult.newResult(incomeService.amount(user.getId()));
+    }
 }
