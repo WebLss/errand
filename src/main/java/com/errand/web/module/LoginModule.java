@@ -176,7 +176,8 @@ public class LoginModule {
 
             return ResponseResult.newFailResult("用户名不存在");
         } else {
-            if(exist.getOpenId() != null) {
+            System.out.println(exist.getOpenId());
+            if(exist.getOpenId() != null && !exist.getOpenId().equals("")) {
                 return ResponseResult.newFailResult("该账号已绑定过其他微信号");
             }
         }
@@ -190,9 +191,14 @@ public class LoginModule {
                         message = "该角色下不存在对应用户";
                     }
                     break;
-                case "业务员":
+                case "配送员":
                     System.out.println("B");
-                    if(!exist.isSystem()) {
+                    if(!exist.isTaker()) {
+                        message = "该角色下不存在对应用户";
+                    }
+                case "普通用户":
+                    System.out.println("C");
+                    if(exist.isSuper() || exist.isTaker() ) {
                         message = "该角色下不存在对应用户";
                     }
                 default:
@@ -211,6 +217,24 @@ public class LoginModule {
 
         return null;
     }
+
+    @POST
+    @At("/registerUser")
+    @AdaptBy(type = JsonAdaptor.class)
+    public Result registerUser(@Param("username") String name, @Param("password") String pwd ) {
+        if(name != "" && pwd != "") {
+            User user = new User();
+            user.setName(name);
+            user.setPassword(Lang.md5(pwd));
+            userService.insert(user);
+            return ResponseResult.newResult();
+        } else {
+            return ResponseResult.newFailResult("用户名或密码不能为空");
+        }
+    }
+
+
+
 
     /**
      * 获取收入明细列表

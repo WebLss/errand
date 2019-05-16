@@ -60,5 +60,12 @@ public class UserService extends BaseService<User> {
         return fetch(cnd);
     }
 
+    /**
+     * 获取用户列表
+     * @return
+     */
+    public List<User>  query() {
+        return dao().query(User.class, Cnd.where("is_super", "!=", 1));
+    }
 
 }
