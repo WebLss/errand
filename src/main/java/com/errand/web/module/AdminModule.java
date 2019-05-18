@@ -2,6 +2,7 @@ package com.errand.web.module;
 
 import com.errand.domain.User;
 import com.errand.domain.UserInfo;
+import com.errand.exception.BusinessException;
 import com.errand.mvc.context.UserContext;
 import com.errand.mvc.filter.AccessTokenFilter;
 import com.errand.service.AdminService;
@@ -85,10 +86,49 @@ public class AdminModule {
      */
     @POST
     @Filters(@By(type = AccessTokenFilter.class, args = {"ioc:tokenFilter"}))
-    @At("/passExam")
+    @At("/pass")
     @AdaptBy(type = JsonAdaptor.class)
-    public Result passExam(@Param("userId") Long userId) {
-        return ResponseResult.newFailResult("");
+    public Result passExam(@Param("id") Long id) {
+        try {
+            adminService.pass(id);
+            return ResponseResult.newResult("操作成功");
+        } catch (BusinessException e) {
+            return ResponseResult.newFailResult("操作失败");
+        }
+
+
+    }
+
+    /**
+     * 设置vip
+     * @param id
+     * @return
+     */
+    @POST
+    @Filters(@By(type = AccessTokenFilter.class, args = {"ioc:tokenFilter"}))
+    @At("/vip")
+    @AdaptBy(type = JsonAdaptor.class)
+    public Result setVip(@Param("id") Long id) {
+        User user = userService.fetchById(id);
+        user.setVip(true);
+        userService.update(user, "^isVip$");
+        return ResponseResult.newResult();
+    }
+
+    /**
+     * 移除vip
+     * @param id
+     * @return
+     */
+    @POST
+    @Filters(@By(type = AccessTokenFilter.class, args = {"ioc:tokenFilter"}))
+    @At("/removeVip")
+    @AdaptBy(type = JsonAdaptor.class)
+    public Result removeVip(@Param("id") Long id) {
+        User user = userService.fetchById(id);
+        user.setVip(false);
+        userService.update(user, "^isVip$");
+        return ResponseResult.newResult();
     }
 
 }

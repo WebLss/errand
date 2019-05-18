@@ -4,12 +4,17 @@ package com.errand.service;
 import com.errand.common.page.Pagination;
 import com.errand.domain.User;
 import com.errand.domain.UserInfo;
+import com.errand.exception.BusinessException;
+import com.errand.web.support.ResponseCodes;
+import org.nutz.dao.Chain;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
 import org.nutz.dao.sql.Criteria;
 import org.nutz.dao.util.cri.Exps;
 import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.lang.util.NutMap;
+import org.nutz.trans.Atom;
+import org.nutz.trans.Trans;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +62,24 @@ public class AdminService extends BaseService<UserInfo>{
         return nutMaps;
     }
 
+    /**
+     * 通过操作
+     */
+    public void pass(Long id) throws BusinessException{
+        final UserInfo userInfo = dao().fetch(UserInfo.class,id);
+        userInfo.setExam(true);
+        try {
+            Trans.exec(new Atom() {
+                @Override
+                public void run() {
+                    dao().update(userInfo, "^isExam$");
+                    dao().update(User.class, Chain.make("taker", true),Cnd.where("id", "=", userInfo.getUserId()));
+                }
+            });
+        } catch (BusinessException e) {
+            throw new BusinessException(ResponseCodes.RESPONSE_CODE_SYSTEM_ERROR);
+        }
 
+    }
 
 }
