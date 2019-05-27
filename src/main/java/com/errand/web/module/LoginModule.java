@@ -196,6 +196,7 @@ public class LoginModule {
                     if(!exist.isTaker()) {
                         message = "该角色下不存在对应用户";
                     }
+                    break;
                 case "普通用户":
                     System.out.println("C");
                     if(exist.isSuper() || exist.isTaker() ) {
