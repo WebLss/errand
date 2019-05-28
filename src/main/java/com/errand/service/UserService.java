@@ -56,6 +56,10 @@ public class UserService extends BaseService<User> {
         return fetch(Cnd.where("name", "=", name));
     }
 
+    public User fetchByOpenId(String name) {
+        return fetch(Cnd.where("openId", "=", name));
+    }
+
     public User fetchById(Long id) {
         return dao().fetch(User.class, id);
     }

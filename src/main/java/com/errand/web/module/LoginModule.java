@@ -75,6 +75,13 @@ public class LoginModule {
                     return ResponseResult.newFailResult(resultMap.getString("errmsg"));
                 } else {
                     System.out.println(resultMap.getString("openid"));
+
+                    //判断该openId是否已经绑定其他账号
+                    User u = userService.fetchByOpenId(resultMap.getString("openid"));
+                    if(u != null ) {
+                        return ResponseResult.newFailResult("该openId已绑定其他账号");
+                    }
+
                     User exist = userService.fetchByCnd(Cnd.where("name", "=",name).and("password","=", Lang.md5(password)));
                     exist.setOpenId(resultMap.getString("openid"));
                     userService.update(exist);
@@ -180,6 +187,7 @@ public class LoginModule {
             if(exist.getOpenId() != null && !exist.getOpenId().equals("")) {
                 return ResponseResult.newFailResult("该账号已绑定过其他微信号");
             }
+
         }
         System.out.println(role);
         if(role != null) {
