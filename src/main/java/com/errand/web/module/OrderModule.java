@@ -178,12 +178,14 @@ public class OrderModule {
             //时间格式化
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             try {
-                if(!CommonUtils.isToday(format.parse(user.getIsTipTime().toString()))) { //时间输出为true，则处于当天24h范围内，false反之
+                if(!CommonUtils.isToday(user.getIsTipTime())) { //时间输出为true，则处于当天24h范围内，false反之
                     user.setIsAble(5);  // 设置可抢单5次
-                    userService.update(user, "^isAble$");
+                    user.setIsTipTime(new Date());
+                    userService.update(user);
                 }
-            } catch (ParseException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
+
             }
         }
         Pagination page = new Pagination();

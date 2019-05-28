@@ -241,6 +241,7 @@ public class OrderService extends BaseService<Order>{
         if(!user.isSuper() && user.isTaker() && !user.isVip()) {
             if(user.getIsAble() > 0) {
                 user.setIsAble(user.getIsAble()-1);
+                System.out.println(user.getIsAble());
                 final String _orderId = orderId;
                 final User _user = user;
                 try {
@@ -252,7 +253,7 @@ public class OrderService extends BaseService<Order>{
                             dao().update(ord, "^orderStatus$");
                             UserOrder userOrder = dao().fetch(UserOrder.class, _orderId);
                             userOrder.setSellerId(_user.getId());
-                            dao().insert(userOrder);
+                            dao().update(userOrder);
                         }
                     });
                 } catch (Exception e) {
@@ -260,6 +261,10 @@ public class OrderService extends BaseService<Order>{
                     throw new BusinessException(ResponseCodes.RESPONSE_CODE_SYSTEM_ERROR);
                 }
 
+            } else {
+                user.setIsTipTime(new Date());
+                dao().update(user,  "^isTipTime$");
+                throw new BusinessException("您的接单次数已达到上线");
             }
         } else if(user.isSuper() || (user.isTaker() && user.isVip())){
             final String _orderId = orderId;
