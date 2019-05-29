@@ -2,6 +2,7 @@ package com.errand.web.module;
 import com.errand.common.page.Pagination;
 import com.errand.domain.Order;
 import com.errand.domain.User;
+import com.errand.domain.UserOrder;
 import com.errand.exception.BusinessException;
 import com.errand.mvc.context.UserContext;
 import com.errand.mvc.filter.AccessTokenFilter;
@@ -136,12 +137,14 @@ public class OrderModule {
     public Result confirmOrder(@Param("orderId") String  orderId) {
         User user = UserContext.getCurrentuser().get();
         user = userService.fetchByCnd(Cnd.where("name","=", user.getName()).and("password", "=", user.getPassword()));
+        UserOrder userOrder =  orderService.fetchUserOrderById(orderId);
+
         if(orderId != "") {
             Order order = orderService.find(orderId);
             order.setOrderStatus(4);
             order.setFinish_time(new Date().toString());
             try {
-                orderService.confirmOrder(order, user.getId());
+                orderService.confirmOrder(order, userOrder.getSellerId());
                 return ResponseResult.newResult();
             } catch (BusinessException e) {
                 return ResponseResult.newFailResult(e.getMessage());

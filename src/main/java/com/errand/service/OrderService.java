@@ -288,4 +288,12 @@ public class OrderService extends BaseService<Order>{
         }
     }
 
+    /**
+     * 获取userorder
+     * @return
+     */
+    public UserOrder fetchUserOrderById(String orderId) {
+        return dao().fetch(UserOrder.class, orderId);
+    }
+
 }
